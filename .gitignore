@@ -1,0 +1,57 @@
+# Visual Studio / Rider
+.vs/
+.idea/
+*.sln.iml
+*.DotSettings.user
+*.csproj.user
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.ncrunch*
+_ReSharper*/
+*.[Cc]ache
+*.vspscc
+*.vssscc
+
+# Build output
+[Bb]in/
+[Oo]bj/
+**/[Bb]in/
+**/[Oo]bj/
+*.exe
+*.dll
+*.pdb
+*.app
+*.cache
+*.ilk
+*.log
+*.vsix
+*.tmp
+*.temp
+
+# NuGet
+*.nupkg
+*.snupkg
+packages/
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# ASP.NET Scaffolding
+ScaffoldingReadMe.txt
+
+# Rider
+*.rider/
+
+# User-specific files
+*.suo
+*.user
+*.userosscache
+*.csproj.user
+*.dbmdl
+*.bak
+
+# OS generated files
+.DS_Store
+Thumbs.db
