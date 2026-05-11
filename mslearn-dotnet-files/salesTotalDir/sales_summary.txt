@@ -2,12 +2,12 @@ Sales Summary
 ----------------------------------
 Total Sales: 2012.2
 Details:
-/Users/mac/Desktop/pg-cse325/mslearn-dotnet-files/stores/sales.json
-/Users/mac/Desktop/pg-cse325/mslearn-dotnet-files/stores/204/sales.json
-/Users/mac/Desktop/pg-cse325/mslearn-dotnet-files/stores/204/salestotals.json
-/Users/mac/Desktop/pg-cse325/mslearn-dotnet-files/stores/203/sales.json
-/Users/mac/Desktop/pg-cse325/mslearn-dotnet-files/stores/203/salestotals.json
-/Users/mac/Desktop/pg-cse325/mslearn-dotnet-files/stores/202/sales.json
-/Users/mac/Desktop/pg-cse325/mslearn-dotnet-files/stores/202/salestotals.json
-/Users/mac/Desktop/pg-cse325/mslearn-dotnet-files/stores/201/sales.json
-/Users/mac/Desktop/pg-cse325/mslearn-dotnet-files/stores/201/salestotals.jsonSales Summary
+/Users/mac/Desktop/cse325/mslearn-dotnet-files/stores/sales.json
+/Users/mac/Desktop/cse325/mslearn-dotnet-files/stores/204/sales.json
+/Users/mac/Desktop/cse325/mslearn-dotnet-files/stores/204/salestotals.json
+/Users/mac/Desktop/cse325/mslearn-dotnet-files/stores/203/sales.json
+/Users/mac/Desktop/cse325/mslearn-dotnet-files/stores/203/salestotals.json
+/Users/mac/Desktop/cse325/mslearn-dotnet-files/stores/202/sales.json
+/Users/mac/Desktop/cse325/mslearn-dotnet-files/stores/202/salestotals.json
+/Users/mac/Desktop/cse325/mslearn-dotnet-files/stores/201/sales.json
+/Users/mac/Desktop/cse325/mslearn-dotnet-files/stores/201/salestotals.json
