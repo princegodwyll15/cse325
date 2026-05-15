@@ -1,0 +1,28 @@
+@todolist_HostAddress = http://localhost:5098
+
+GET {{todolist_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
+GET {{todolist_HostAddress}}/todos/
+
+###
+POST {{todolist_HostAddress}}/todos/
+Content-Type: application/json
+
+{
+    "Id": 1,
+    "Name": "Test Todo Item",
+    "Duetime": "2021-06-01T12:00:00",
+    "Iscomplete": false,
+    "Description": "This is a test todo item"
+}
+
+###
+GET {{todolist_HostAddress}}/todos/2
+
+###
+GET {{todolist_HostAddress}}/task/4
+
+###
+DELETE {{todolist_HostAddress}}/todos/1

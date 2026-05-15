@@ -1,0 +1,23 @@
+//install auto codegenerator
+dotnet tool uninstall --global dotnet-aspnet-codegenerator
+dotnet tool install --global dotnet-aspnet-codegenerator
+dotnet tool uninstall --global dotnet-ef
+dotnet tool install --global dotnet-ef
+dotnet add package Microsoft.EntityFrameworkCore.Design
+dotnet add package Microsoft.EntityFrameworkCore.SQLite
+dotnet add package Microsoft.VisualStudio.Web.CodeGeneration.Design
+dotnet add package Microsoft.EntityFrameworkCore.SqlServer
+dotnet add package Microsoft.EntityFrameworkCore.Tools
+
+
+//create a db instance
+dotnet aspnet-codegenerator razorpage -m Movie -dc RazorPagesMovie.Data.RazorPagesMovieContext -udl -outDir Pages/Movies --referenceScriptLibraries --databaseProvider sqlite
+
+
+//create entities for a created model file 
+dotnet ef migrations add InitialCreate
+
+//this actually creates the db 
+dotnet ef database update
+
+//update a database schema using an entity EntityFramework/Core
