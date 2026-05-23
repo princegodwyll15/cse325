@@ -1,0 +1,52 @@
+@page "/todo";
+@rendermode InteractiveServer
+
+<h1>Todo List (@todoItems.Count(t => !t.IsCompleted))</h1>
+
+<ul class="list-group mb-5">
+    @foreach (TodoItem todo in todoItems)
+    {
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            <input class="form-check-input" type="checkbox" value="" id="checkChecked" @bind="todo.IsCompleted" />
+            <input type="text" aria-label="Todo title" aria-describedby="button-addon2" @bind="todo.Title" />
+             <span class="badge text-bg-primary rounded-pill">@todo.DueDate.ToShortDateString()</span>
+        </li>
+
+    }
+</ul>
+
+<div class="input-group mb-3">
+    <input type="text" class="form-control" placeholder="Todo name here ..." aria-label="Todo title"
+           aria-describedby="button-addon2" @bind="newTodoTitle" />
+    <button class="btn btn-outline-secondary" type="button" id="button-addon2" @onclick="AddTodo">Add Todo</button>
+</div>
+
+@code {
+    public List<TodoItem> todoItems = new List<TodoItem>();
+    private string newTodoTitle = string.Empty;
+
+    private int nextid = 0;
+    public class TodoItem
+    {
+        public int Id { get; set; }
+        public string Title { get; set; } = string.Empty;
+        public bool IsCompleted { get; set; }
+        public DateTime DueDate { get; set; }
+    }
+
+    private void AddTodo(MouseEventArgs e)
+    {
+        if (e is not null)
+        {
+            TodoItem newTodo = new TodoItem
+            {
+                Id = nextid++,
+                Title = newTodoTitle,
+                IsCompleted = false,
+                DueDate = DateTime.Now.AddDays(7) // Set a default due date
+            };
+            todoItems.Add(newTodo);
+            newTodoTitle = string.Empty; // Clear the input field
+        }
+    }
+}

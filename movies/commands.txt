@@ -21,3 +21,19 @@ dotnet ef migrations add InitialCreate
 dotnet ef database update
 
 //update a database schema using an entity EntityFramework/Core
+
+
+//create a website with razor page template
+dotnet new webapp -o RazorPagesMovie
+code -r RazorPagesMovie
+
+
+//create razor app too 
+dotnet aspnet-codegenerator razorpage -m Movie -dc RazorPagesMovie.Data.RazorPagesMovieContext -udl -outDir Pages/Movies --referenceScriptLibraries --databaseProvider sqlite
+Option	Description
+-m	The name of the model.
+-dc	The DbContext class to use including namespace.
+-udl	Use the default layout.
+-outDir	The relative output folder path to create the views.
+--referenceScriptLibraries	Adds _ValidationScriptsPartial to Edit and Create pages
+Use the -h option to get help on the dotnet aspnet-codegenerator razorpage command:

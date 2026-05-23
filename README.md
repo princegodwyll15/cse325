@@ -20,3 +20,7 @@
 - `Directory.GetFiles()` — list files in a directory
 - `Environment.NewLine` — cross-platform line break
 - `Path.DirectorySeparatorChar` — cross-platform path separator
+
+
+
+## dotnet new razorcomponent -n PizzaBrowser -o /Components/Pages
