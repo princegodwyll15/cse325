@@ -1,0 +1,47 @@
+@using BlazingPizza.Services
+@using BlazingPizza.Data
+@inject PizzaService pizzaService
+@page "/pizzas"
+
+
+<h1 class="my-4">Pizzas</h1>
+
+@if (todaysPizzas == null)
+{
+    <p>Todays pizzas not ready</p>
+}
+
+<table>
+    <thead>
+        <tr>
+            <th>Pizza Name</th>
+            <th>Description</th>
+            <th>Vegetarian?</th>
+            <th>Vegan?</th>
+            <th>Price</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var pizza in todaysPizzas)
+        {
+            <tr>
+                <td>@pizza.Name</td>
+                <td>@pizza.Description</td>
+                <td>@pizza.Vegetarian</td>
+                <td>@pizza.Vegan</td>
+                <td>@pizza.Price</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+@code {
+    private List<Pizza> todaysPizzas = new();
+    protected override async Task OnInitializedAsync()
+    {
+        todaysPizzas = await pizzaService.GetPizzaAsync();
+    }
+
+}
+

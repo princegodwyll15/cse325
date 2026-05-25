@@ -1,0 +1,98 @@
+﻿@using BlazingPizza.Data
+@using BlazingPizza.Services
+@using BlazingPizza.Components.Pages
+
+@page "/"
+@rendermode InteractiveServer
+@inject HttpClient HttpClient
+@inject NavigationManager NavigationManager
+@inject OrderState OrderState
+
+<div class="d-flex vh-100 overflow-hidden">
+
+    <div class="flex-grow-1 overflow-auto p-4">
+        <h1 class="mb-4 fw-bold">Blazing Pizzas</h1>
+        <ul class="pizza-cards row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4 list-unstyled">
+            @if (specials != null)
+            {
+                @foreach (var special in specials)
+                {
+                    <li class="col">
+                        <div @onclick="@(() => OrderState.ShowConfigurePizzaDialog(special))"
+                             style="background-image: url('@special.ImageUrl'); background-size: cover; background-position: center;"
+                             class="card border-0 shadow-sm text-white cursor-pointer position-relative overflow-hidden h-100"
+                             role="button">
+                            <div class="pizza-info card-body d-flex flex-column justify-content-end"
+                                 style="background: linear-gradient(to top, rgba(0,0,0,0.75), transparent); min-height: 220px;">
+                                <span class="title card-title fw-bold fs-5">@special.Name</span>
+                                <p class="card-text small text-white-50 mb-1">@special.Description</p>
+                                <span
+                                class="price badge bg-success fs-6 align-self-start">₵@special.GetFormattedBasePrice()</span>
+                            </div>
+                        </div>
+                    </li>
+                }
+            }
+        </ul>
+    </div>
+
+    <div class="border-start bg-white d-flex flex-column" style="width: 300px; min-width: 300px;">
+
+        @if (order.Pizzas.Any())
+        {
+            <div class="flex-grow-1 overflow-auto">
+                <h2 class="fs-5 fw-bold mb-3 border-bottom pb-2">Your order</h2>
+                @foreach (var configuredPizza in order.Pizzas)
+                {
+                    <div class="position-relative border-bottom mb-2 p-2 pe-4">
+                        <div class="small fw-semibold">
+                            @(configuredPizza.Size)" @configuredPizza.Special.Name
+                        </div>
+                        <div class="text-success small fw-bold mt-1">
+                            ₵@configuredPizza.GetFormattedTotalPrice()
+                        </div>
+                        <a @onclick="@(() => OrderState.RemoveConfiguredPizza(configuredPizza))"
+                           class="position-absolute top-0 end-0 text-danger text-decoration-none"
+                           style="cursor: pointer; font-size: 1rem; line-height: 1;">
+                            X
+                        </a>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="flex-grow-1 d-flex flex-column align-items-center justify-content-center text-muted p-4">
+                <i class="ri-shopping-basket-2-line fs-1 mb-2"></i>
+                <span class="text-center">Choose a pizza<br>to get started</span>
+            </div>
+        }
+
+        <div
+            class="p-3 border-top d-flex justify-content-between align-items-center @(order.Pizzas.Any() ? "" : "invisible")">
+            <span class="fw-bold">
+                Total: <span class="text-success">₵@order.GetFormattedTotalPrice()</span>
+            </span>
+            <a href="checkout" class="btn btn-warning btn-sm fw-semibold @(order.Pizzas.Count == 0 ? "disabled" : "")">
+                Order &gt;
+            </a>
+        </div>
+    </div>
+</div>
+
+@if (OrderState.ShowingConfigureDialog)
+{
+    <ConfigurePizzaDialog Pizza="OrderState.ConfiguringPizza" OnCancel="OrderState.CancelConfigurePizzaDialog"
+                          OnConfirm="OrderState.ConfirmConfigurePizzaDialog" />
+}
+
+@code {
+    List<PizzaSpecial> specials = new();
+
+    Order order => OrderState.Order;
+
+    protected override async Task OnInitializedAsync()
+    {
+        specials = await HttpClient.GetFromJsonAsync<List<PizzaSpecial>>(NavigationManager.BaseUri + "specials");
+    }
+}
