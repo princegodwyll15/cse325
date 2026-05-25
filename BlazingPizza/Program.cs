@@ -10,10 +10,12 @@ builder.Services.AddRazorComponents()
 
 builder.Services.AddSingleton<PizzaService>();
 builder.Services.AddScoped<OrderState>();
-builder.Services.AddScoped(sp => new HttpClient
-{
-    BaseAddress = new Uri("http://localhost:5044/")
-});
+builder.Services.AddScoped(sp =>
+    new HttpClient
+    {
+        BaseAddress = new Uri("https://localhost:5044/")
+    });
+
 builder.Services.AddHttpClient();
 
 builder.Services.AddControllers();

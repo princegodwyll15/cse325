@@ -1,8 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using BlazingPizza.Data;
 
-namespace BlazingPizza;
+namespace BlazingPizza.Data;
 
 [Route("orders")]
 [ApiController]
@@ -30,20 +29,22 @@ public class OrdersController : Controller
     [HttpPost]
     public async Task<ActionResult<int>> PlaceOrder(Order order)
     {
-        order.CreatedTime = DateTime.Now;
+        order.CreatedTime = DateTime.UtcNow;
 
-        // Enforce existence of Pizza.SpecialId and Topping.ToppingId
-        // in the database - prevent the submitter from making up
-        // new specials and toppings
+        // Attach existing Special and Topping records instead of inserting duplicates
         foreach (var pizza in order.Pizzas)
         {
-            pizza.SpecialId = pizza.Special.Id;
-            pizza.Special = null;
+            _db.Entry(pizza.Special).State = EntityState.Unchanged;
+
+            foreach (var topping in pizza.Toppings)
+            {
+                _db.Entry(topping.Topping).State = EntityState.Unchanged;
+            }
         }
 
-        _db.Orders.Attach(order);
+        _db.Orders.Add(order);
         await _db.SaveChangesAsync();
 
-        return order.OrderId;
+        return Ok(order.OrderId);
     }
 }

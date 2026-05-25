@@ -1,6 +1,3 @@
-using System.Globalization;
-using System.Linq;
-
 namespace BlazingPizza.Data;
 
 public class Pizza
@@ -10,6 +7,9 @@ public class Pizza
     public const int MaximumSize = 17;
 
     public int PizzaId { get; set; }
+
+    public int OrderId { get; set; }
+    public Order Order { get; set; } = default!;
 
     public string Name { get; set; } = string.Empty;
 
@@ -31,7 +31,9 @@ public class Pizza
 
     public decimal GetBasePrice()
     {
-        return Special != null ? Special.BasePrice * Size / DefaultSize : Price;
+        return Special != null
+            ? Special.BasePrice * Size / DefaultSize
+            : Price;
     }
 
     public decimal GetTotalPrice()
@@ -47,4 +49,3 @@ public class Pizza
     public string GetFormattedTotalPrice() =>
         $"₵{GetTotalPrice():0.00}";
 }
-

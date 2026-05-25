@@ -1,6 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using BlazingPizza.Data;
-
 namespace BlazingPizza.Data;
 
 public class PizzaStoreContext : DbContext
@@ -28,11 +26,13 @@ public class PizzaStoreContext : DbContext
         modelBuilder.Entity<PizzaTopping>()
             .HasOne(pt => pt.Pizza)
             .WithMany(p => p.Toppings)
-            .HasForeignKey(pt => pt.PizzaId);
+            .HasForeignKey(pt => pt.PizzaId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<PizzaTopping>()
             .HasOne(pt => pt.Topping)
             .WithMany()
-            .HasForeignKey(pt => pt.ToppingId);
+            .HasForeignKey(pt => pt.ToppingId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }
