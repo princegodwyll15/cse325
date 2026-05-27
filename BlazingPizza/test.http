@@ -1,5 +1,8 @@
 @BlazingPizza_HostAddress = http://localhost:5044
 
+###
+GET {{BlazingPizza_HostAddress}}/specials
+
 ### Get all orders
 GET {{BlazingPizza_HostAddress}}/orders
 
@@ -7,34 +10,21 @@ GET {{BlazingPizza_HostAddress}}/orders
 ### Get a specific order
 GET {{BlazingPizza_HostAddress}}/orders/1
 
+###
+DELETE {{BlazingPizza_HostAddress}}/orders/2
+
 ### Create a new order
 POST {{BlazingPizza_HostAddress}}/orders
 Content-Type: application/json
 
 {
-  "OrderId": 1,
-  "Pizzas": [
+  "pizzas": [
     {
-      "SpecialId": 2,
-      "Size": 12,
-      "Special": {
-        "Id": 2,
-        "Name": "Pepperoni Feast",
-        "BasePrice": 10.99,
-        "Description": "Loaded with pepperoni",
-        "ImageUrl": "img/pizzas/pepperoni.jpg"
-      },
-      "Toppings": [
-        {
-          "ToppingId": 1,
-          "Topping": {
-            "Id": 1,
-            "Name": "Extra Cheese",
-            "Price": 1.50
-          }
-        }
-      ]
+      "specialId": 2,
+      "size": 12
     }
-  ],
-  "CreatedTime": "2026-05-25T10:30:00"
+  ]
 }
+
+###
+GET {{BlazingPizza_HostAddress}}/toppings

@@ -1,42 +1,45 @@
 @using BlazingPizza.Data
 @inject HttpClient HttpClient
 
-<div class="modal fade show d-block" tabindex="-1" style="background: rgba(0,0,0,0.5);">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
+@if (Pizza is not null)
+{
+    <div class="modal fade show d-block" tabindex="-1" style="background: rgba(0,0,0,0.5);">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
 
-            <div class="modal-header">
-                <h5 class="modal-title fw-bold">@Pizza.Special.Name</h5>
-                <button type="button" class="btn-close btn-close-white" @onclick="OnCancel"></button>
-            </div>
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold">@((Pizza.Special?.Name) ?? string.Empty)</h5>
+                    <button type="button" class="btn-close btn-close-white" @onclick="OnCancel"></button>
+                </div>
 
-            <div class="modal-body">
-                <p class="text-muted">@Pizza.Special.Description</p>
-                <div class="mb-3">
-                    <label class="form-label fw-semibold">Size:</label>
-                    <input type="range" class="form-range" min="@Pizza.MinimumSize" max="@Pizza.MaximumSize" step="1"
-                           @bind:event="oninput" @bind="Pizza.Size" />
-                    <div class="text-center text-muted small mt-1">
-                        @(Pizza.Size)" &mdash; ₵@(Pizza.GetFormattedTotalPrice())
+                <div class="modal-body">
+                    <p class="text-muted">@((Pizza.Special?.Description) ?? string.Empty)</p>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Size:</label>
+                        <input type="range" class="form-range" min="@Pizza.MinimumSize" max="@Pizza.MaximumSize" step="1"
+                               @bind:event="oninput" @bind="Pizza.Size" />
+                        <div class="text-center text-muted small mt-1">
+                            @(Pizza.Size)" &mdash; ₵@(Pizza.GetFormattedTotalPrice())
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="modal-footer justify-content-between">
-                <button class="btn btn-secondary" @onclick="OnCancel">Cancel</button>
-                <span class="fw-semibold">
-                    Price: <span class="text-success">₵@(Pizza.GetFormattedTotalPrice())</span>
-                </span>
-                <button class="btn btn-success" @onclick="OnConfirm">Order &gt;</button>
-            </div>
+                <div class="modal-footer justify-content-between">
+                    <button class="btn btn-secondary" @onclick="OnCancel">Cancel</button>
+                    <span class="fw-semibold">
+                        Price: <span class="text-success">₵@(Pizza.GetFormattedTotalPrice())</span>
+                    </span>
+                    <button class="btn btn-success" @onclick="OnConfirm">Order &gt;</button>
+                </div>
 
+            </div>
         </div>
     </div>
-</div>
+}
 
 
 @code {
-    [Parameter] public Pizza Pizza { get; set; }
+    [Parameter] public Pizza? Pizza { get; set; }
     [Parameter] public EventCallback OnCancel { get; set; }
     [Parameter] public EventCallback OnConfirm { get; set; }
 }

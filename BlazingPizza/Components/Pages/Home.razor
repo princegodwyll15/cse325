@@ -48,7 +48,7 @@
                 {
                     <div class="position-relative border-bottom mb-2 p-2 pe-4">
                         <div class="small fw-semibold">
-                            @(configuredPizza.Size)" @configuredPizza.Special.Name
+                            @configuredPizza.Special?.Name ?? "Unknown pizza"
                         </div>
                         <div class="text-success small fw-bold mt-1">
                             ₵@configuredPizza.GetFormattedTotalPrice()
@@ -93,8 +93,5 @@
 
     Order order => OrderState.Order;
 
-    protected override async Task OnInitializedAsync()
-    {
-        specials = await HttpClient.GetFromJsonAsync<List<PizzaSpecial>>(NavigationManager.BaseUri + "specials");
-    }
+    protected override async Task OnInitializedAsync() => specials = await HttpClient.GetFromJsonAsync<List<PizzaSpecial>>(NavigationManager.BaseUri + "specials") ?? new();
 }

@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 namespace BlazingPizza.Data;
 
 public class Pizza
@@ -8,7 +9,9 @@ public class Pizza
 
     public int PizzaId { get; set; }
 
-    public int OrderId { get; set; }
+    public int OrderId { get; set; }    
+    
+    [JsonIgnore]
     public Order Order { get; set; } = default!;
 
     public string Name { get; set; } = string.Empty;
@@ -25,9 +28,9 @@ public class Pizza
 
     public int SpecialId { get; set; }
 
-    public PizzaSpecial Special { get; set; } = default!;
+    public PizzaSpecial? Special { get; set; } = default!;
 
-    public List<PizzaTopping> Toppings { get; set; } = new();
+    public List<PizzaTopping>? Toppings { get; set; } = new();
 
     public decimal GetBasePrice()
     {

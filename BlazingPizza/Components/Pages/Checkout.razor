@@ -14,7 +14,7 @@
                 <p>
                     <strong>
                         @(pizza.Size)"
-                        @pizza.Special.Name
+                        @(pizza.Special?.Name ?? "Unknown Special")
                         (£@pizza.GetFormattedTotalPrice())
                     </strong>
                 </p>

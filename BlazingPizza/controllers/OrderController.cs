@@ -1,7 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using BlazingPizza.Data;
 
-namespace BlazingPizza.Data;
+namespace BlazingPizza.Controllers;
 
 [Route("orders")]
 [ApiController]
@@ -18,33 +19,57 @@ public class OrdersController : Controller
     public async Task<ActionResult<List<OrderWithStatus>>> GetOrders()
     {
         var orders = await _db.Orders
-        .Include(o => o.Pizzas).ThenInclude(p => p.Special)
-        .Include(o => o.Pizzas).ThenInclude(p => p.Toppings).ThenInclude(t => t.Topping)
+        .Include(o => o.Pizzas!).ThenInclude(p => p.Special!)
+        .Include(o => o.Pizzas).ThenInclude(p => p.Toppings!).ThenInclude(t => t.Topping!)
         .OrderByDescending(o => o.CreatedTime)
         .ToListAsync();
 
         return orders.Select(o => OrderWithStatus.FromOrder(o)).ToList();
     }
 
-    [HttpPost]
-    public async Task<ActionResult<int>> PlaceOrder(Order order)
+[HttpPost]
+public async Task<ActionResult<int>> PlaceOrder(Order order)
+{
+    order.CreatedTime = DateTime.UtcNow;
+
+    foreach (var pizza in order.Pizzas)
     {
-        order.CreatedTime = DateTime.UtcNow;
+        pizza.Order = order;
+    }
 
-        // Attach existing Special and Topping records instead of inserting duplicates
-        foreach (var pizza in order.Pizzas)
+    _db.Orders.Add(order);
+
+    await _db.SaveChangesAsync();
+
+    return Ok(order.OrderId);
+}
+
+    [HttpGet("{orderId}")]
+    public async Task<ActionResult<Order>> GetOrder(int orderId)
+    {
+        if(orderId <= 0)
         {
-            _db.Entry(pizza.Special).State = EntityState.Unchanged;
-
-            foreach (var topping in pizza.Toppings)
-            {
-                _db.Entry(topping.Topping).State = EntityState.Unchanged;
-            }
+            return BadRequest("Invalid order ID.");
         }
 
-        _db.Orders.Add(order);
+        return await _db.Orders
+            .Include(o => o.Pizzas!).ThenInclude(p => p.Special!)
+            .Include(o => o.Pizzas!).ThenInclude(p => p.Toppings!).ThenInclude(t => t.Topping!)
+            .FirstAsync(o => o.OrderId == orderId);
+    }
+
+    [HttpDelete("{orderId}")]
+    public async Task<IActionResult> DeleteOrder(int orderId)
+    {
+        var order = await _db.Orders.FindAsync(orderId);
+        if (order == null)
+        {
+            return NotFound();
+        }
+
+        _db.Orders.Remove(order);
         await _db.SaveChangesAsync();
 
-        return Ok(order.OrderId);
+        return NoContent();
     }
 }

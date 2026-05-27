@@ -1,6 +1,7 @@
 using BlazingPizza.Components;
 using BlazingPizza.Data;
 using BlazingPizza.Services;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +16,11 @@ builder.Services.AddScoped(sp =>
     {
         BaseAddress = new Uri("https://localhost:5044/")
     });
+object value = builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.ReferenceHandler =
+        ReferenceHandler.IgnoreCycles;
+});
 
 builder.Services.AddHttpClient();
 
