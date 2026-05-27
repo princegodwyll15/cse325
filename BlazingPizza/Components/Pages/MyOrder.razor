@@ -6,14 +6,18 @@
 <PageTitle>My orders</PageTitle>
 
 <div class="main">
-    @if (ordersWithStatus == null)
+    @if (loadError != null)
+    {
+        <div class="alert alert-danger">Error loading orders: @loadError</div>
+    }
+    else if (ordersWithStatus == null)
     {
         <text>Loading...</text>
     }
     else if (!ordersWithStatus.Any())
     {
-        <h2>No orders placed</h2>
-        <a class="btn btn-success" href="">Order some pizza</a>
+            <h2>No orders placed</h2>
+            <a class="btn btn-success" href="/">Order some pizza</a>
     }
     else
     {
@@ -31,10 +35,10 @@
                     <div class="col">
                         Status: <strong>@item.StatusText</strong>
                     </div>
-                    @if (@item.StatusText != "Delivered")
+                    @if (item.StatusText != "Delivered")
                     {
                         <div class="col flex-grow-0">
-                            <a href="myorders/" class="btn btn-success">
+                            <a href="/myorders" class="btn btn-success">
                                 Track &gt;
                             </a>
                         </div>
@@ -46,11 +50,27 @@
 </div>
 
 @code {
-    List<OrderWithStatus> ordersWithStatus = new List<OrderWithStatus>();
+    List<OrderWithStatus>? ordersWithStatus = null;
+    string? loadError = null;
 
-    protected override async Task OnParametersSetAsync()
+    protected override async Task OnInitializedAsync()
     {
-        ordersWithStatus = await HttpClient.GetFromJsonAsync<List<OrderWithStatus>>(
-            $"{NavigationManager.BaseUri}orders") ?? new List<OrderWithStatus>();
+        try
+        {
+            // Use NavigationManager to build an absolute URI to avoid base address mismatches
+            var uri = NavigationManager.ToAbsoluteUri("orders");
+            var options = new System.Text.Json.JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            };
+
+            ordersWithStatus = await HttpClient.GetFromJsonAsync<List<OrderWithStatus>>(uri, options)
+                ?? new List<OrderWithStatus>();
+        }
+        catch (Exception ex)
+        {
+            loadError = ex.Message;
+            ordersWithStatus = new List<OrderWithStatus>();
+        }
     }
 }

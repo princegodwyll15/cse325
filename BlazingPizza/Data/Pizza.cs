@@ -12,7 +12,7 @@ public class Pizza
     public int OrderId { get; set; }    
     
     [JsonIgnore]
-    public Order Order { get; set; } = default!;
+    public Order? Order { get; set; }
 
     public string Name { get; set; } = string.Empty;
 

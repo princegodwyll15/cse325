@@ -11,7 +11,7 @@ GET {{BlazingPizza_HostAddress}}/orders
 GET {{BlazingPizza_HostAddress}}/orders/1
 
 ###
-DELETE {{BlazingPizza_HostAddress}}/orders/2
+DELETE {{BlazingPizza_HostAddress}}/orders/1
 
 ### Create a new order
 POST {{BlazingPizza_HostAddress}}/orders

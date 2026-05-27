@@ -19,7 +19,7 @@
                         <input type="range" class="form-range" min="@Pizza.MinimumSize" max="@Pizza.MaximumSize" step="1"
                                @bind:event="oninput" @bind="Pizza.Size" />
                         <div class="text-center text-muted small mt-1">
-                            @(Pizza.Size)" &mdash; ₵@(Pizza.GetFormattedTotalPrice())
+                            @(Pizza.Size)" &mdash; @(Pizza.GetFormattedTotalPrice())
                         </div>
                     </div>
                 </div>
@@ -27,7 +27,7 @@
                 <div class="modal-footer justify-content-between">
                     <button class="btn btn-secondary" @onclick="OnCancel">Cancel</button>
                     <span class="fw-semibold">
-                        Price: <span class="text-success">₵@(Pizza.GetFormattedTotalPrice())</span>
+                        Price: <span class="text-success">@(Pizza.GetFormattedTotalPrice())</span>
                     </span>
                     <button class="btn btn-success" @onclick="OnConfirm">Order &gt;</button>
                 </div>

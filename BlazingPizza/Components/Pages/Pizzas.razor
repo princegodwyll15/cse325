@@ -6,23 +6,20 @@
 
 <h1 class="my-4">Pizzas</h1>
 
-@if (todaysPizzas == null)
+@if (todaysPizzas != null)
 {
-    <p>Todays pizzas not ready</p>
-}
-
-<table>
-    <thead>
-        <tr>
-            <th>Pizza Name</th>
-            <th>Description</th>
-            <th>Vegetarian?</th>
-            <th>Vegan?</th>
-            <th>Price</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var pizza in todaysPizzas)
+    <table>
+        <thead>
+            <tr>
+                <th>Pizza Name</th>
+                <th>Description</th>
+                <th>Vegetarian?</th>
+                <th>Vegan?</th>
+                <th>Price</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var pizza in todaysPizzas)
         {
             <tr>
                 <td>@pizza.Name</td>
@@ -34,6 +31,11 @@
         }
     </tbody>
 </table>
+}
+else
+{
+    <p><em>Loading...</em></p>
+}
 
 
 @code {
