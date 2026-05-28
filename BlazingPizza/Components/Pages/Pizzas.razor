@@ -4,87 +4,103 @@
 @page "/pizzas"
 
 <div class="container py-4">
+
+    <!-- Header -->
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="fw-bold text-primary mb-0">🍕 Pizzas</h1>
+        <div>
+            <h1 class="fw-bold text-warning mb-1">
+                🍕 Pizzas
+            </h1>
+
+            <p class="text-muted mb-0">
+                Freshly prepared pizzas available today
+            </p>
+        </div>
     </div>
 
     @if (todaysPizzas != null && todaysPizzas.Any())
     {
-        <div class="card shadow-sm border-0">
-            <div class="card-body p-0">
-                <div class="table-responsive">
-                    <table class="table table-hover table-striped align-middle mb-0">
-                        <thead class="table-dark">
-                            <tr>
-                                <th>Pizza Name</th>
-                                <th>Description</th>
-                                <th class="text-center">Vegetarian</th>
-                                <th class="text-center">Vegan</th>
-                                <th class="text-end">Price</th>
-                            </tr>
-                        </thead>
+        <div class="row g-4">
 
-                        <tbody>
-                            @foreach (var pizza in todaysPizzas)
-                            {
-                                <tr>
-                                    <td class="fw-semibold">@pizza.Name</td>
+            @foreach (var pizza in todaysPizzas)
+            {
+                <div class="col-12 col-md-6 col-xl-4">
 
-                                    <td class="text-muted">
-                                        @pizza.Description
-                                    </td>
+                    <div class="card h-100 shadow-sm border-0">
 
-                                    <td class="text-center">
-                                        @if (pizza.Vegetarian)
-                                        {
-                                            <span class="badge bg-success">
-                                                Yes
-                                            </span>
-                                        }
-                                        else
-                                        {
-                                            <span class="badge bg-secondary">
-                                                No
-                                            </span>
-                                        }
-                                    </td>
+                        <div class="card-body d-flex flex-column">
 
-                                    <td class="text-center">
-                                        @if (pizza.Vegan)
-                                        {
-                                            <span class="badge bg-success">
-                                                Yes
-                                            </span>
-                                        }
-                                        else
-                                        {
-                                            <span class="badge bg-secondary">
-                                                No
-                                            </span>
-                                        }
-                                    </td>
+                            <!-- Pizza Name -->
+                            <div class="d-flex justify-content-between align-items-start mb-3">
 
-                                    <td class="text-end fw-bold text-primary">
-                                        $@pizza.Price
-                                    </td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
+                                <h5 class="card-title fw-bold mb-0">
+                                    @pizza.Name
+                                </h5>
+
+                                <span class="badge bg-warning text-dark fs-6">
+                                    $@pizza.Price
+                                </span>
+
+                            </div>
+
+                            <!-- Description -->
+                            <p class="card-text text-muted flex-grow-1">
+                                @pizza.Description
+                            </p>
+
+                            <!-- Tags -->
+                            <div class="d-flex flex-wrap gap-2 mt-3">
+
+                                @if (pizza.Vegetarian)
+                                {
+                                    <span class="badge bg-success">
+                                        Vegetarian
+                                    </span>
+                                }
+
+                                @if (pizza.Vegan)
+                                {
+                                    <span class="badge bg-success-subtle text-success border border-success">
+                                        Vegan
+                                    </span>
+                                }
+
+                                @if (!pizza.Vegetarian && !pizza.Vegan)
+                                {
+                                    <span class="badge bg-secondary">
+                                        Classic
+                                    </span>
+                                }
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
                 </div>
-            </div>
+            }
+
         </div>
     }
     else
     {
-        <div class="d-flex justify-content-center align-items-center py-5">
-            <div class="spinner-border text-primary me-3" role="status">
-                <span class="visually-hidden">Loading...</span>
+        <!-- Loading -->
+        <div class="d-flex flex-column justify-content-center align-items-center py-5">
+
+            <div class="spinner-border text-warning mb-3"
+                 style="width: 3rem; height: 3rem;"
+                 role="status">
+
+                <span class="visually-hidden">
+                    Loading...
+                </span>
             </div>
 
             <span class="fs-5 text-muted">
                 Loading pizzas...
             </span>
+
         </div>
     }
 </div>

@@ -3,44 +3,150 @@
 @inject HttpClient HttpClient
 @inject NavigationManager NavigationManager
 
-<PageTitle>My orders</PageTitle>
+<PageTitle>My Orders</PageTitle>
 
-<div class="main">
+<div class="container py-4">
+
+    <!-- Header -->
+    <div class="mb-4">
+        <h1 class="fw-bold text-warning mb-1">
+            🍕 My Orders
+        </h1>
+
+        <p class="text-muted mb-0">
+            View and track your recent pizza orders
+        </p>
+    </div>
+
     @if (ordersWithStatus == null)
     {
-        <text>Loading...</text>
+        <!-- Loading -->
+        <div class="d-flex flex-column justify-content-center align-items-center py-5">
+
+            <div class="spinner-border text-warning mb-3"
+                 style="width: 3rem; height: 3rem;"
+                 role="status">
+
+                <span class="visually-hidden">
+                    Loading...
+                </span>
+            </div>
+
+            <span class="fs-5 text-muted">
+                Loading orders...
+            </span>
+
+        </div>
     }
     else if (!ordersWithStatus.Any())
     {
-            <h2>No orders placed</h2>
-            <a class="btn btn-success" href="/">Order some pizza</a>
+        <!-- Empty State -->
+        <div class="card border-0 shadow-sm text-center py-5">
+
+            <div class="card-body">
+
+                <h3 class="fw-bold mb-3">
+                    No orders placed yet
+                </h3>
+
+                <p class="text-muted mb-4">
+                    Looks like you haven't ordered any pizzas yet.
+                </p>
+
+                <a class="btn btn-warning btn-lg px-4" href="/">
+                    🍕 Order Some Pizza
+                </a>
+
+            </div>
+
+        </div>
     }
     else
     {
-        <div class="list-group orders-list">
+        <!-- Orders -->
+        <div class="row g-4">
+
             @foreach (var item in ordersWithStatus)
             {
-                <div class="list-group-item">
-                    <div class="col">
-                        <h5>@item.Order.CreatedTime.ToLongDateString()</h5>
-                        Items:
-                        <strong>@item.Order.Pizzas.Count()</strong>;
-                        Total price:
-                        <strong>@item.Order.GetFormattedTotalPrice()</strong>
-                    </div>
-                    <div class="col">
-                        Status: <strong>@item.StatusText</strong>
-                    </div>
-                    @if (item.StatusText != "Delivered")
-                    {
-                        <div class="col flex-grow-0">
-                            <a href="/myorders/@item.Order.OrderId" class="btn btn-success">
-                                Track &gt;
-                            </a>
+                <div class="col-12">
+
+                    <div class="card shadow-sm border-0 h-100">
+                        <div class="card-body">
+                            <div class="row align-items-center g-3">
+                                <!-- Order Info -->
+                                <div class="col-12 col-lg-5">
+                                    <h5 class="fw-bold mb-2">
+                                    @item.Order.CreatedTime.ToLongDateString()
+                                    </h5>
+                                    <div class="text-muted">
+                                        <div class="mb-1">
+                                            Items:
+                                            <strong>
+                                                @item.Order.Pizzas.Count()
+                                            </strong>
+                                        </div>
+                                        <div>
+                                            Total:
+                                            <strong class="text-warning">
+                                                @item.Order.GetFormattedTotalPrice()
+                                            </strong>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                                <!-- Status -->
+                                <div class="col-12 col-lg-4">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <span class="fw-semibold">
+                                            Status:
+                                        </span>
+                                        @if (item.StatusText == "Delivered")
+                                        {
+                                            <span class="badge bg-success fs-6">
+                                                @item.StatusText
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-warning text-dark fs-6">
+                                                @item.StatusText
+                                            </span>
+                                        }
+                                    </div>
+                                </div>
+
+                                <!-- Action -->
+                                <div class="col-12 col-lg-3 text-lg-end">
+                                    @if (item.StatusText != "Delivered")
+                                    {
+                                        <a href="/myorders/@item.Order.OrderId"
+                                           class="btn btn-warning w-100 w-lg-auto">
+
+                                            Track Order →
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <button class="btn btn-outline-success w-100 w-lg-auto"
+                                                disabled>
+
+                                            Delivered
+                                        </button>
+                                    }
+
+                                </div>
+
+                            </div>
+
                         </div>
-                    }
+
+                    </div>
+
                 </div>
             }
+
         </div>
     }
 </div>

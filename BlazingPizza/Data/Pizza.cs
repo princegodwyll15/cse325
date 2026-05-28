@@ -50,5 +50,5 @@ public class Pizza
     }
 
     public string GetFormattedTotalPrice() =>
-        $"₵{GetTotalPrice():0.00}";
+        $"${GetTotalPrice():0.00}";
 }

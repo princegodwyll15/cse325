@@ -3,71 +3,198 @@
 @inject NavigationManager NavigationManager
 @page "/myorders/{orderId:int}"
 
-<div class="main">
+<PageTitle>Track Order</PageTitle>
+
+<div class="container py-4">
+
     @if (invalidOrder)
     {
-        <h2>Order not found</h2>
-        <p>We're sorry but this order no longer exists.</p>
+        <!-- Invalid Order -->
+        <div class="card border-0 shadow-sm text-center py-5">
+
+            <div class="card-body">
+
+                <h2 class="fw-bold text-danger mb-3">
+                    Order Not Found
+                </h2>
+
+                <p class="text-muted mb-4">
+                    We're sorry, but this order no longer exists.
+                </p>
+
+                <a href="/myorders"
+                   class="btn btn-warning btn-lg">
+
+                    Back to My Orders
+                </a>
+
+            </div>
+
+        </div>
     }
     else if (orderWithStatus == null)
     {
-        <div class="track-order">
-            <div class="track-order-title">
-                <h2>
-                  <text>Loading...</text>
-                </h2>
-                <p class="ml-auto mb-0">
-                    ...
-                </p>
+        <!-- Loading -->
+        <div class="d-flex flex-column justify-content-center align-items-center py-5">
+
+            <div class="spinner-border text-warning mb-3"
+                 style="width: 3rem; height: 3rem;"
+                 role="status">
+
+                <span class="visually-hidden">
+                    Loading...
+                </span>
             </div>
+
+            <span class="fs-5 text-muted">
+                Loading your order...
+            </span>
+
         </div>
     }
     else
     {
-        <div class="track-order">
-            <div class="track-order-title">
-                <h2>
-                    Order placed @orderWithStatus.Order.CreatedTime.ToLongDateString()
-                </h2>
-                <p class="ml-auto mb-0">
-                    Status: <strong>@orderWithStatus.StatusText</strong>
-                </p>
-            </div>
-            <div class="track-order-body">
-                <div class="track-order-details">
-                  @foreach (var pizza in orderWithStatus.Order.Pizzas)
-                  {
-                      <p>
-                          <strong>
-                              @(pizza.Size)"
-                              @pizza.Special?.Name
-                              (£@pizza.GetFormattedTotalPrice())
-                          </strong>
-                      </p>
-                  }
-                </div>
-            </div>
+        <!-- Header -->
+        <div class="mb-4">
+
+            <h1 class="fw-bold text-warning mb-2">
+                🍕 Track Order
+            </h1>
+
+            <p class="text-muted mb-0">
+                Order placed on
+                @orderWithStatus.Order.CreatedTime.ToLongDateString()
+            </p>
+
         </div>
+
+        <!-- Status Card -->
+        <div class="card shadow-sm border-0 mb-4">
+
+            <div class="card-body">
+
+                <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3">
+
+                    <div>
+
+                        <h4 class="fw-bold mb-2">
+                            Order Status
+                        </h4>
+
+                        <p class="text-muted mb-0">
+                            Your pizza order is currently being processed.
+                        </p>
+
+                    </div>
+
+                    <div>
+                        @if (orderWithStatus.StatusText == "Delivered")
+                        {
+                            <span class="badge bg-success fs-5 px-4 py-3">
+                                @orderWithStatus.StatusText
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-warning text-dark fs-5 px-4 py-3">
+                                @orderWithStatus.StatusText
+                            </span>
+                        }
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Ordered Items -->
+        <div class="card shadow-sm border-0">
+
+            <div class="card-body">
+
+                <h4 class="fw-bold mb-4">
+                    Order Details
+                </h4>
+
+                <div class="row g-3">
+
+                    @foreach (var pizza in orderWithStatus.Order.Pizzas)
+                    {
+                        <div class="col-12">
+
+                            <div class="border rounded-4 p-3">
+
+                                <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+
+                                    <div>
+
+                                        <h5 class="fw-bold mb-1">
+                                            @(pizza.Size)"
+                                            @pizza.Special?.Name
+                                        </h5>
+
+                                        <small class="text-muted">
+                                            Freshly prepared pizza
+                                        </small>
+
+                                    </div>
+
+                                    <span class="badge bg-warning text-dark fs-6 px-3 py-2">
+                                        @pizza.GetFormattedTotalPrice()
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+                    }
+
+                </div>
+
+                <!-- Total -->
+                <div class="mt-4 pt-4 border-top">
+
+                    <div class="d-flex justify-content-between align-items-center">
+
+                        <h4 class="fw-bold mb-0">
+                            Total
+                        </h4>
+
+                        <span class="fs-3 fw-bold text-warning">
+                            @orderWithStatus.Order.GetFormattedTotalPrice()
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
     }
 </div>
 
 @code {
-    [Parameter] public int OrderId { get; set; }
+    [Parameter]
+    public int OrderId { get; set; }
 
     OrderWithStatus? orderWithStatus;
     bool invalidOrder = false;
 
     protected override async Task OnParametersSetAsync()
     {
-      try
-      {
-          orderWithStatus = await HttpClient.GetFromJsonAsync<OrderWithStatus>(
-              $"{NavigationManager.BaseUri}orders/{OrderId}");
-      }
-      catch (Exception ex)
-      {
-          invalidOrder = true;
-          Console.Error.WriteLine(ex);
-      }
+        try
+        {
+            orderWithStatus = await HttpClient.GetFromJsonAsync<OrderWithStatus>(
+                $"{NavigationManager.BaseUri}orders/{OrderId}");
+        }
+        catch (Exception ex)
+        {
+            invalidOrder = true;
+            Console.Error.WriteLine(ex);
+        }
     }
 }

@@ -1,48 +1,94 @@
 @namespace BlazingPizza.Components.Shared
 @using BlazingPizza.Data
 
-<div class="form-field">
-    <label>Name:</label>
-    <div>
-        <input @bind="Address.Name" />
-    </div>
-</div>
+<div class="container-fluid p-0 w-full">
 
-<div class="form-field">
-    <label>Line 1:</label>
-    <div>
-        <input @bind="Address.Line1" />
-    </div>
-</div>
+    <div class="row g-3">
 
-<div class="form-field">
-    <label>Line 2:</label>
-    <div>
-        <input @bind="Address.Line2" />
-    </div>
-</div>
+        <!-- Name -->
+        <div class="col-12">
+            <label class="form-label fw-semibold">
+                Name
+            </label>
 
-<div class="form-field">
-    <label>City:</label>
-    <div>
-        <input @bind="Address.City" />
-    </div>
-</div>
+            <input
+            @ref="startName"
+                class="form-control"
+                @bind="Address.Name"
+                placeholder="Enter your full name" />
+        </div>
 
-<div class="form-field">
-    <label>Region:</label>
-    <div>
-        <input @bind="Address.Region" />
-    </div>
-</div>
+        <!-- Address Line 1 -->
+        <div class="col-12">
+            <label class="form-label fw-semibold">
+                Address Line 1
+            </label>
 
-<div class="form-field">
-    <label>Postal code:</label>
-    <div>
-        <input @bind="Address.PostalCode" />
+            <input
+                class="form-control"
+                @bind="Address.Line1"
+                placeholder="Street address" />
+        </div>
+
+        <!-- Address Line 2 -->
+        <div class="col-12">
+            <label class="form-label fw-semibold">
+                Address Line 2
+            </label>
+
+            <input
+                class="form-control"
+                @bind="Address.Line2"
+                placeholder="Apartment, suite, etc. (optional)" />
+        </div>
+
+        <!-- City -->
+        <div class="col-12 col-md-6">
+            <label class="form-label fw-semibold">
+                City
+            </label>
+
+            <input
+                class="form-control"
+                @bind="Address.City"
+                placeholder="City" />
+        </div>
+
+        <!-- Region -->
+        <div class="col-12 col-md-6">
+            <label class="form-label fw-semibold">
+                Region
+            </label>
+
+            <input
+                class="form-control"
+                @bind="Address.Region"
+                placeholder="Region / State" />
+        </div>
+
+        <!-- Postal Code -->
+        <div class="col-12">
+            <label class="form-label fw-semibold">
+                Postal Code
+            </label>
+
+            <input
+                class="form-control"
+                @bind="Address.PostalCode"
+                placeholder="Postal code" />
+        </div>
+
     </div>
 </div>
 
 @code {
-    [Parameter] public Address Address { get; set; } = new Address();
+private ElementReference startName;
+protected override async Task OnAfterRenderAsync(bool firstRender)
+{
+    if (firstRender) {
+        await startName.FocusAsync();
+    }
+}
+    [Parameter]
+    public Address Address { get; set; } = new Address();
 }

@@ -29,7 +29,7 @@
                                 <span class="title card-title fw-bold fs-5">@special.Name</span>
                                 <p class="card-text small text-white-50 mb-1">@special.Description</p>
                                 <span
-                                class="price badge bg-success fs-6 align-self-start">₵@special.GetFormattedBasePrice()</span>
+                                class="price badge bg-success fs-6 align-self-start">$@special.GetFormattedBasePrice()</span>
                             </div>
                         </div>
                     </li>
@@ -84,7 +84,7 @@
 
 @if (OrderState.ShowingConfigureDialog)
 {
-    <ConfigurePizzaDialog Pizza="OrderState.ConfiguringPizza" OnCancel="OrderState.CancelConfigurePizzaDialog"
+    <BlazingPizza.Components.Shared.ConfigurePizzaDialog Pizza="OrderState.ConfiguringPizza" OnCancel="OrderState.CancelConfigurePizzaDialog"
                           OnConfirm="OrderState.ConfirmConfigurePizzaDialog" />
 }
 
