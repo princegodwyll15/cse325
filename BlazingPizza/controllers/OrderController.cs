@@ -87,20 +87,30 @@ public async Task<ActionResult<int>> PlaceOrder(PlaceOrderDto orderDto)
     return Ok(order.OrderId);
 }
 
-    [HttpGet("{orderId}")]
-    public async Task<ActionResult<Order>> GetOrder(int orderId)
+[HttpGet("{orderId}")]
+public async Task<ActionResult<OrderWithStatus>> GetOrder(int orderId)
+{
+    if (orderId <= 0)
     {
-        if(orderId <= 0)
-        {
-            return BadRequest("Invalid order ID.");
-        }
-
-        return await _db.Orders
-            .Include(o => o.Pizzas!).ThenInclude(p => p.Special!)
-            .Include(o => o.Pizzas!).ThenInclude(p => p.Toppings!).ThenInclude(t => t.Topping!)
-            .AsSplitQuery()
-            .FirstAsync(o => o.OrderId == orderId);
+        return BadRequest("Invalid order ID.");
     }
+
+    var order = await _db.Orders
+        .Include(o => o.Pizzas!)
+            .ThenInclude(p => p.Special!)
+        .Include(o => o.Pizzas!)
+            .ThenInclude(p => p.Toppings!)
+            .ThenInclude(t => t.Topping!)
+        .AsSplitQuery()
+        .FirstOrDefaultAsync(o => o.OrderId == orderId);
+
+    if (order == null)
+    {
+        return NotFound();
+    }
+
+    return OrderWithStatus.FromOrder(order);
+}
 
     [HttpDelete("{orderId}")]
     public async Task<IActionResult> DeleteOrder(int orderId)

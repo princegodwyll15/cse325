@@ -8,7 +8,7 @@ GET {{BlazingPizza_HostAddress}}/orders
 
 
 ### Get a specific order
-GET {{BlazingPizza_HostAddress}}/orders/1
+GET {{BlazingPizza_HostAddress}}/orders/2
 
 ###
 DELETE {{BlazingPizza_HostAddress}}/orders/1

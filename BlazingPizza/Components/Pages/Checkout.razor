@@ -1,5 +1,7 @@
 @using BlazingPizza.Data
 @using BlazingPizza.Services
+
+
 @page "/checkout"
 
 @inject OrderState OrderState
@@ -20,31 +22,23 @@
     }
     else
     {
-        <div class="checkout-cols">
-            <div class="checkout-order-details">
-
-                <h4>Review order</h4>
-
-                @foreach (var pizza in OrderState.Order.Pizzas)
-                {
-                    <p>
-                        <strong>
-                            @(pizza.Size)"
-                            @(pizza.Special?.Name ?? "Unknown Special")
-                            (@pizza.GetFormattedTotalPrice())
-                        </strong>
-                    </p>
-                }
-
-                <p>
-                    <strong>
-                        Total price:
-                        @OrderState.Order.GetFormattedTotalPrice()
-                    </strong>
-                </p>
-
-            </div>
+        <div class="main">
+    <div class="checkout-cols">
+        <div class="checkout-order-details">
+            <h4>Review order</h4>
+            <BlazingPizza.Components.Shared.OrderReview Order="OrderState.Order" />
         </div>
+
+        <div class="checkout-delivery-address">
+            <h4>Deliver to...</h4>
+            <BlazingPizza.Components.Shared.AddressEditor Address="OrderState.Order.DeliveryAddress" />
+        </div>
+    </div>
+
+    <button class="checkout-button btn btn-warning" @onclick="PlaceOrder" disabled=@isSubmitting>
+        Place order
+    </button>
+</div>
 
         <button class="checkout-button btn btn-warning"
                 @onclick="PlaceOrder"
