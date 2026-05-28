@@ -6,11 +6,7 @@
 <PageTitle>My orders</PageTitle>
 
 <div class="main">
-    @if (loadError != null)
-    {
-        <div class="alert alert-danger">Error loading orders: @loadError</div>
-    }
-    else if (ordersWithStatus == null)
+    @if (ordersWithStatus == null)
     {
         <text>Loading...</text>
     }
@@ -50,27 +46,13 @@
 </div>
 
 @code {
-    List<OrderWithStatus>? ordersWithStatus = null;
-    string? loadError = null;
+    List<OrderWithStatus>? ordersWithStatus;
 
     protected override async Task OnInitializedAsync()
     {
-        try
-        {
-            // Use NavigationManager to build an absolute URI to avoid base address mismatches
-            var uri = NavigationManager.ToAbsoluteUri("orders");
-            var options = new System.Text.Json.JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true
-            };
-
-            ordersWithStatus = await HttpClient.GetFromJsonAsync<List<OrderWithStatus>>(uri, options)
-                ?? new List<OrderWithStatus>();
-        }
-        catch (Exception ex)
-        {
-            loadError = ex.Message;
-            ordersWithStatus = new List<OrderWithStatus>();
-        }
+        ordersWithStatus =
+            await HttpClient.GetFromJsonAsync<List<OrderWithStatus>>
+            (NavigationManager.BaseUri + "orders")
+            ?? new();
     }
 }

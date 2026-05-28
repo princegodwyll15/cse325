@@ -16,6 +16,7 @@ builder.Services.AddScoped(sp =>
     {
         BaseAddress = new Uri("https://localhost:5044/")
     });
+    
 object value = builder.Services.AddControllers().AddJsonOptions(options =>
 {
     options.JsonSerializerOptions.ReferenceHandler =

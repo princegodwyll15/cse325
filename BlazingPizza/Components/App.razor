@@ -15,16 +15,10 @@
 </head>
 
 <body>
-    <Router AppAssembly="@typeof(Program).Assembly">
-        <Found Context="routeData">
-            <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
-        </Found>
-        <NotFound>
-            <p>Sorry, we haven't found any pizzas here.</p>
-        </NotFound>
-    </Router>
+    <Routes @rendermode="InteractiveServer" />
+    
     <ReconnectModal />
+    
     <script src="@Assets["_framework/blazor.web.js"]"></script>
 </body>
-
 </html>

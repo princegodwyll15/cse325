@@ -1,49 +1,77 @@
 @using BlazingPizza.Data
 @using BlazingPizza.Services
 @page "/checkout"
+
 @inject OrderState OrderState
 @inject HttpClient HttpClient
 @inject NavigationManager NavigationManager
 
+<PageTitle>Checkout</PageTitle>
+
 <div class="main">
-    <div class="checkout-cols">
-        <div class="checkout-order-details">
-            <h4>Review order</h4>
-            @foreach (var pizza in Order.Pizzas)
-            {
+
+    @if (OrderState.Order == null || !OrderState.Order.Pizzas.Any())
+    {
+        <h3>Your order is empty.</h3>
+
+        <a class="btn btn-success" href="/">
+            Order some pizza
+        </a>
+    }
+    else
+    {
+        <div class="checkout-cols">
+            <div class="checkout-order-details">
+
+                <h4>Review order</h4>
+
+                @foreach (var pizza in OrderState.Order.Pizzas)
+                {
+                    <p>
+                        <strong>
+                            @(pizza.Size)"
+                            @(pizza.Special?.Name ?? "Unknown Special")
+                            (@pizza.GetFormattedTotalPrice())
+                        </strong>
+                    </p>
+                }
+
                 <p>
                     <strong>
-                        @(pizza.Size)"
-                        @(pizza.Special?.Name ?? "Unknown Special")
-                        (£@pizza.GetFormattedTotalPrice())
+                        Total price:
+                        @OrderState.Order.GetFormattedTotalPrice()
                     </strong>
                 </p>
-            }
 
-            <p>
-                <strong>
-                    Total price:
-                    £@Order.GetFormattedTotalPrice()
-                </strong>
-            </p>
+            </div>
         </div>
-    </div>
 
-    <button class="checkout-button btn btn-warning" @onclick="PlaceOrder" disabled=@isSubmitting>
-        Place order
-    </button>
+        <button class="checkout-button btn btn-warning"
+                @onclick="PlaceOrder"
+                disabled="@isSubmitting">
+
+            Place order
+        </button>
+    }
+
 </div>
 
 @code {
-    Order Order => OrderState.Order;
     bool isSubmitting;
 
-    async Task PlaceOrder()
+async Task PlaceOrder()
+{
+    isSubmitting = true;
+
+    var response = await HttpClient.PostAsJsonAsync(
+        NavigationManager.BaseUri + "orders",
+        OrderState.Order);
+
+    if (response.IsSuccessStatusCode)
     {
-        isSubmitting = true;
-        var response = await HttpClient.PostAsJsonAsync(NavigationManager.BaseUri + "orders", OrderState.Order);
-        var newOrderId = await response.Content.ReadFromJsonAsync<int>();
         OrderState.ResetOrder();
-        NavigationManager.NavigateTo("/");
+
+        NavigationManager.NavigateTo("/myorders");
+    }
     }
 }

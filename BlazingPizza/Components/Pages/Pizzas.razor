@@ -3,47 +3,97 @@
 @inject PizzaService pizzaService
 @page "/pizzas"
 
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="fw-bold text-primary mb-0">🍕 Pizzas</h1>
+    </div>
 
-<h1 class="my-4">Pizzas</h1>
+    @if (todaysPizzas != null && todaysPizzas.Any())
+    {
+        <div class="card shadow-sm border-0">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped align-middle mb-0">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Pizza Name</th>
+                                <th>Description</th>
+                                <th class="text-center">Vegetarian</th>
+                                <th class="text-center">Vegan</th>
+                                <th class="text-end">Price</th>
+                            </tr>
+                        </thead>
 
-@if (todaysPizzas != null)
-{
-    <table>
-        <thead>
-            <tr>
-                <th>Pizza Name</th>
-                <th>Description</th>
-                <th>Vegetarian?</th>
-                <th>Vegan?</th>
-                <th>Price</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var pizza in todaysPizzas)
-        {
-            <tr>
-                <td>@pizza.Name</td>
-                <td>@pizza.Description</td>
-                <td>@pizza.Vegetarian</td>
-                <td>@pizza.Vegan</td>
-                <td>@pizza.Price</td>
-            </tr>
-        }
-    </tbody>
-</table>
-}
-else
-{
-    <p><em>Loading...</em></p>
-}
+                        <tbody>
+                            @foreach (var pizza in todaysPizzas)
+                            {
+                                <tr>
+                                    <td class="fw-semibold">@pizza.Name</td>
 
+                                    <td class="text-muted">
+                                        @pizza.Description
+                                    </td>
+
+                                    <td class="text-center">
+                                        @if (pizza.Vegetarian)
+                                        {
+                                            <span class="badge bg-success">
+                                                Yes
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-secondary">
+                                                No
+                                            </span>
+                                        }
+                                    </td>
+
+                                    <td class="text-center">
+                                        @if (pizza.Vegan)
+                                        {
+                                            <span class="badge bg-success">
+                                                Yes
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-secondary">
+                                                No
+                                            </span>
+                                        }
+                                    </td>
+
+                                    <td class="text-end fw-bold text-primary">
+                                        $@pizza.Price
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="d-flex justify-content-center align-items-center py-5">
+            <div class="spinner-border text-primary me-3" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+
+            <span class="fs-5 text-muted">
+                Loading pizzas...
+            </span>
+        </div>
+    }
+</div>
 
 @code {
     private List<Pizza> todaysPizzas = new();
+
     protected override async Task OnInitializedAsync()
     {
         todaysPizzas = await pizzaService.GetPizzaAsync();
     }
-
 }
-
