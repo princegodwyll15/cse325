@@ -1,7 +1,6 @@
 @using BlazingPizza.Data
 @using BlazingPizza.Services
-
-
+@implements IDisposable
 @page "/checkout"
 
 @inject OrderState OrderState
@@ -11,84 +10,110 @@
 <PageTitle>Checkout</PageTitle>
 
 <div class="main">
+    <EditForm EditContext=editContext OnValidSubmit=PlaceOrder>
+        @if (OrderState.Order == null || !OrderState.Order.Pizzas.Any())
+        {
+            <h3>Your order is empty.</h3>
 
-    @if (OrderState.Order == null || !OrderState.Order.Pizzas.Any())
-    {
-        <h3>Your order is empty.</h3>
+            <a class="btn btn-success" href="/">
+                Order some pizza
+            </a>
+        }
+        else
+        {
+            <div class="container py-4">
+                <div class="row g-4">
 
-        <a class="btn btn-success" href="/">
-            Order some pizza
-        </a>
-    }
-    else
-    {
-<div class="container py-4">
-    <div class="row g-4">
+                    <!-- Order Review -->
+                    <div class="col-12 col-lg-7">
+                        <div class="card shadow-sm h-100">
+                            <div class="card-body">
+                                <h4 class="card-title mb-4">Review Order</h4>
 
-        <!-- Order Review -->
-        <div class="col-12 col-lg-7">
-            <div class="card shadow-sm h-100">
-                <div class="card-body">
-                    <h4 class="card-title mb-4">Review Order</h4>
+                                <BlazingPizza.Components.Shared.OrderReview Order="OrderState.Order" />
+                            </div>
+                        </div>
+                    </div>
 
-                    <BlazingPizza.Components.Shared.OrderReview
-                        Order="OrderState.Order" />
+                    <!-- Delivery Address -->
+                    <div class="col-12 col-lg-5">
+                        <div class="card shadow-sm h-100">
+                            <div class="card-body">
+                                <h4 class="card-title mb-4">Deliver To...</h4>
+                                <BlazingPizza.Components.Shared.AddressEditor Address="OrderState.Order.DeliveryAddress" />
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Button -->
+                <div class="d-grid mt-4 w-100">
+                    <button type="submit" class="btn btn-success btn-sm w-100" disabled="@isError">
+
+                        @if (isSubmitting)
+                        {
+                            <span class="spinner-border spinner-border-sm me-2"></span>
+                            <span>Placing Order...</span>
+                        }
+                        else
+                        {
+                            <span>Place Order</span>
+                        }
+                    </button>
                 </div>
             </div>
-        </div>
-
-        <!-- Delivery Address -->
-        <div class="col-12 col-lg-5">
-            <div class="card shadow-sm h-100">
-                <div class="card-body">
-                    <h4 class="card-title mb-4">Deliver To...</h4>
-
-                    <BlazingPizza.Components.Shared.AddressEditor
-                        Address="OrderState.Order.DeliveryAddress" />
-                </div>
-            </div>
-        </div>
-
-    </div>
-
-    <!-- Button -->
-    <div class="d-grid mt-4 w-100">
-        <button
-            class="btn btn-success btn-sm w-100"
-            @onclick="PlaceOrder"
-            disabled="@isSubmitting">
-
-            @if (isSubmitting)
-            {
-                <span class="spinner-border spinner-border-sm me-2"></span>
-                <span>Placing Order...</span>
-            }
-            else
-            {
-                <span>Place Order</span>
-            }
-        </button>
-    </div>
-</div>}
-
+        }
+        <DataAnnotationsValidator />
+    </EditForm>
 </div>
 
 @code {
+    private EditContext? editContext;
     bool isSubmitting;
-
-async Task PlaceOrder()
-{
-    isSubmitting = true;
-
-    var response = await HttpClient.PostAsJsonAsync(
-        NavigationManager.BaseUri + "orders",
-        OrderState.Order);
-
-    if (response.IsSuccessStatusCode)
+    bool isError = false;
+    protected override void OnInitialized()
     {
-        OrderState.ResetOrder();
-
-        NavigationManager.NavigateTo("/myorders");
+        if (OrderState.Order?.DeliveryAddress is not null)
+        {
+            editContext = new(OrderState.Order.DeliveryAddress);
+            editContext.OnFieldChanged += HandleFieldChanged;
+        }
     }
+    private void HandleFieldChanged(object? sender, FieldChangedEventArgs e)
+    {
+        if (editContext is null)
+        {
+            return;
+        }
+
+        isError = !editContext.Validate();
+        StateHasChanged();
+    }
+    public void Dispose()
+    {
+        if (editContext is not null)
+        {
+            editContext.OnFieldChanged -= HandleFieldChanged;
+        }
+    }
+    private async Task CheckSubmission(EditContext editContext)
+    {
+        if (!isError)
+        {
+            await PlaceOrder();
+        }
+        isSubmitting = false;
+    }
+    protected void ShowError()
+    {
+        isError = true;
+    }
+    async Task PlaceOrder()
+    {
+        var response = await HttpClient.PostAsJsonAsync(NavigationManager.BaseUri + "orders", OrderState.Order);
+        var newOrderId = await response.Content.ReadFromJsonAsync<int>();
+        OrderState.ResetOrder();
+        NavigationManager.NavigateTo($"myorders/{newOrderId}");
     }
 }

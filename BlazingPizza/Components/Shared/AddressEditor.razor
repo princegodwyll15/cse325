@@ -1,21 +1,17 @@
 @namespace BlazingPizza.Components.Shared
 @using BlazingPizza.Data
 
-<div class="container-fluid p-0 w-full">
-
-    <div class="row g-3">
-
         <!-- Name -->
         <div class="col-12">
             <label class="form-label fw-semibold">
                 Name
             </label>
 
-            <input
-            @ref="startName"
+            <InputText
                 class="form-control"
-                @bind="Address.Name"
+                @bind-Value="Address.Name"
                 placeholder="Enter your full name" />
+                <ValidationMessage For="@(() => Address.Name)" />
         </div>
 
         <!-- Address Line 1 -->
@@ -24,10 +20,11 @@
                 Address Line 1
             </label>
 
-            <input
+            <InputText
                 class="form-control"
-                @bind="Address.Line1"
+                @bind-Value="Address.Line1"
                 placeholder="Street address" />
+                <ValidationMessage For="@(() => Address.Line1)" />
         </div>
 
         <!-- Address Line 2 -->
@@ -36,34 +33,37 @@
                 Address Line 2
             </label>
 
-            <input
+            <InputText
                 class="form-control"
-                @bind="Address.Line2"
+                @bind-Value="Address.Line2"
                 placeholder="Apartment, suite, etc. (optional)" />
+                <ValidationMessage For="@(() => Address.Line2)" />
         </div>
 
         <!-- City -->
-        <div class="col-12 col-md-6">
+        <div class="col-12">
             <label class="form-label fw-semibold">
                 City
             </label>
 
-            <input
+            <InputText
                 class="form-control"
-                @bind="Address.City"
+                @bind-Value="Address.City"
                 placeholder="City" />
+                <ValidationMessage For="@(() => Address.City)" />
         </div>
 
         <!-- Region -->
-        <div class="col-12 col-md-6">
+        <div class="col-12">
             <label class="form-label fw-semibold">
                 Region
             </label>
 
-            <input
+            <InputText
                 class="form-control"
-                @bind="Address.Region"
+                @bind-Value="Address.Region"
                 placeholder="Region / State" />
+                <ValidationMessage For="@(() => Address.Region)" />
         </div>
 
         <!-- Postal Code -->
@@ -72,23 +72,15 @@
                 Postal Code
             </label>
 
-            <input
+            <InputText
                 class="form-control"
-                @bind="Address.PostalCode"
+                @bind-Value="Address.PostalCode"
                 placeholder="Postal code" />
+                <ValidationMessage For="@(() => Address.PostalCode)" />
         </div>
 
-    </div>
-</div>
 
 @code {
-private ElementReference startName;
-protected override async Task OnAfterRenderAsync(bool firstRender)
-{
-    if (firstRender) {
-        await startName.FocusAsync();
-    }
-}
     [Parameter]
     public Address Address { get; set; } = new Address();
 }
